@@ -15,3 +15,32 @@ How to use Google Secret Manager in Firebase Cloud Function
 9. Select the secret from the dropdown.
 10. Click the "SAVE" button to grant the permission.
 By granting the "Secret Manager Secret Accessor" role or a similar role to the service account, you are allowing it to access the latest version of the secret.
+  
+  11. Inatall Google secret manager package : npm install @google-cloud/secret-manager
+  
+  13.  const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
+  
+  exports.exampleFunction = async (req, res) => {
+  try {
+    // Create a client instance
+    const client = new SecretManagerServiceClient();
+
+    // Access a secret
+    const [version] = await client.accessSecretVersion({
+      name: 'projects/YOUR_PROJECT_ID/secrets/YOUR_SECRET_NAME/versions/latest',
+    });
+
+    // Get the secret value
+    const secretValue = version.payload.data.toString();
+
+    // Use the secret value in your Cloud Function
+    // ...
+
+    res.status(200).send('Success');
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('An error occurred');
+  }
+};
+  
+
